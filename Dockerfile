@@ -107,17 +107,6 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
     $PIP_INSTALL ~/spconv/dist/spconv-*.whl && \
 
 # ==================================================================
-# second.pytorch
-# ------------------------------------------------------------------
-
-    DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
-        libsm6 libxext6 libxrender-dev && \
-    $GIT_CLONE https://github.com/c7huang/second.pytorch.git \
-        ~/second.pytorch && \
-    $GIT_CLONE https://github.com/nutonomy/nuscenes-devkit.git \
-        ~/nuscenes-devkit && \
-
-# ==================================================================
 # config & cleanup
 # ------------------------------------------------------------------
 
@@ -127,12 +116,14 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
     apt-get autoremove && \
     rm -rf /var/lib/apt/lists/* \
         /tmp/* \
-        ~/get-pip.py \
-        ~/cmake \
-        ~/spconv
+        ~/* \
 
 
-ENV PYTHONPATH=/root/second.pytorch:/root/nuscenes-devkit/python-sdk
-WORKDIR /root/second.pytorch/second
+VOLUME ["/root/pointpillars", "/root/nuscenes"]
+ENV PYTHONPATH=$PYTHONPATH:/root/pointpillars/second.pytorch
+ENV PYTHONPATH=$PYTHONPATH:/root/nuscenes/nuscenes-devkit/python-sdk
+
+WORKDIR /root/pointpillars/second.pytorch/second
 
 ENTRYPOINT ["bash"]
+
