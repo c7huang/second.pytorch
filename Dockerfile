@@ -59,16 +59,22 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
 # ------------------------------------------------------------------
 
     $PIP_INSTALL \
+        cachetools \
         enum34 \
         fire \
         future \
+        motmetrics \
         numba \
         numpy \
         opencv-python \
         pillow \
         protobuf \
+        psutil \
         pybind11 \
+        pyquaternion \
         pyyaml \
+        seaborn \
+        scikit-learn \
         scikit-image>=0.14.2 \
         scipy \
         setuptools \
@@ -104,8 +110,12 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
 # second.pytorch
 # ------------------------------------------------------------------
 
+    DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
+        libsm6 libxext6 libxrender-dev && \
     $GIT_CLONE https://github.com/c7huang/second.pytorch.git \
         ~/second.pytorch && \
+    $GIT_CLONE https://github.com/nutonomy/nuscenes-devkit.git \
+        ~/nuscenes-devkit && \
 
 # ==================================================================
 # config & cleanup
@@ -117,12 +127,12 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
     apt-get autoremove && \
     rm -rf /var/lib/apt/lists/* \
         /tmp/* \
-        ~/cmake \
         ~/get-pip.py \
+        ~/cmake \
         ~/spconv
 
 
-ENV PYTHONPATH=/root/second.pytorch
+ENV PYTHONPATH=/root/second.pytorch:/root/nuscenes-devkit/python-sdk
 WORKDIR /root/second.pytorch/second
 
 ENTRYPOINT ["bash"]
