@@ -98,7 +98,9 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
 # ------------------------------------------------------------------
 
     DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
+        libsm6 libxext6 libxrender-dev \
         libboost-all-dev && \
+
     $GIT_CLONE https://github.com/traveller59/spconv.git \
         ~/spconv && \
     cd ~/spconv && \
