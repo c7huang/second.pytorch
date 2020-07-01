@@ -2,6 +2,7 @@
 
 FROM nvidia/cuda:10.1-cudnn7-devel-ubuntu18.04
 ENV LANG C.UTF-8
+
 RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
     PIP_INSTALL="python -m pip --no-cache-dir install --upgrade" && \
     GIT_CLONE="git clone --recursive" && \
@@ -121,11 +122,15 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
         ~/* \
 
 
-VOLUME ["/root/pointpillars", "/root/nuscenes"]
-ENV PYTHONPATH=$PYTHONPATH:/root/pointpillars/second.pytorch
-ENV PYTHONPATH=$PYTHONPATH:/root/nuscenes/nuscenes-devkit/python-sdk
+ARG POINTPILLARS_ROOT=/root/pointpillars
+ARG NUSCENES_ROOT=/root/nuscenes
+ENV POINTPILLARS_ROOT=$POINTPILLARS_ROOT
+ENV NUSCENES_ROOT=$NUSCENES_ROOT
+ENV PYTHONPATH=$POINTPILLARS_ROOT/second.pytorch
+ENV PYTHONPATH=$PYTHONPATH:$NUSCENES_ROOT/nuscenes-devkit/python-sdk
 
-WORKDIR /root/pointpillars/second.pytorch/second
+VOLUME ["$POINTPILLARS_ROOT", "$NUSCENES_ROOT"]
+WORKDIR /root/
 
 ENTRYPOINT ["bash"]
 
